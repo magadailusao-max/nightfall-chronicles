@@ -1,0 +1,32 @@
+name: Preparar projeto iOS para Xcode
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-xcode-project:
+    runs-on: macos-15
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+          include-templates: true
+      - name: Importar e preparar projeto Xcode
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          godot --headless --path . --import
+          godot --headless --path . --export-debug 'iOS' 'build/Nightfall_Chronicles_iOS.zip'
+          test -s build/Nightfall_Chronicles_iOS.zip
+      - name: Publicar projeto iOS não assinado
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightfall-ios-xcode-nao-assinado
+          path: build/Nightfall_Chronicles_iOS.zip
+          if-no-files-found: error
+          retention-days: 30
