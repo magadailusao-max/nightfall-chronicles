@@ -344,7 +344,7 @@ func _update_bullets(dt: float) -> void:
 		var b: Dictionary = bullets[i]
 		b["pos"] += b["vel"] * dt
 		b["life"] -= dt
-		var hit := b["life"] <= 0 or _collides(b["pos"], 4)
+		var hit: bool = float(b["life"]) <= 0.0 or _collides(b["pos"], 4.0)
 		if not hit:
 			if b["enemy"]:
 				if b["pos"].distance_to(player_pos) < 20 and i_frames == 0:
